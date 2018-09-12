@@ -7,15 +7,33 @@ const BASIC_FEE = 500000;
 
 module.exports.fulfillment = async (event, context) => {
   const { queryResult } = JSON.parse(event.body);
-  let { amount, currency, from, to } = queryResult.parameters;
+  let { action, amount, currency, from, to } = queryResult.parameters;
   let total;
   let fee;
   let fulfillmentText = "";
+  let rate;
   currency = currency.toLowerCase();
   from = from.toLowerCase();
   to = to.toLowerCase();
-
-  if (from === "singapore" && to === "vietnam" && currency === "vnd") {
+  action = action.toLowerCase();
+  if (action === "ban" && currency === "sgd") {
+    rate = BUYING_RATE_SGD;
+    if (amount >= 5000) {
+      rate = BUYING_RATE_SGD + 50;
+    }
+    fulfillmentText = `Ty gia: ${rate} `;
+    total = Math.floor(amount * rate);
+    if (amount) {
+      fulfillmentText += `|   Tong tien: ${amount.toLocaleString()} * ${rate} = ${total.toLocaleString()} VND`;
+    }
+  } else if (action === "mua" && currency === "sgd") {
+    rate = SELLING_RATE_SGD;
+    fulfillmentText = `Ty gia: ${rate} `;
+    total = Math.floor(amount * rate);
+    if (amount) {
+      fulfillmentText += `|   Tong tien: ${amount.toLocaleString()} * ${rate} = ${total.toLocaleString()} VND`;
+    }
+  } else if (from === "singapore" && to === "vietnam" && currency === "vnd") {
     total = Math.ceil(amount / BUYING_RATE_SGD);
     fulfillmentText = `${amount.toLocaleString()} / ${BUYING_RATE_SGD} = ${total.toLocaleString()} SGD`;
   } else if (from === "singapore" && to === "vietnam" && currency === "sgd") {
