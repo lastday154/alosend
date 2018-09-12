@@ -1,0 +1,16 @@
+{
+  "name": "alosend",
+  "version": "1.0.0",
+  "description": "transfer money chatbot",
+  "main": "handler.js",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-offline": "^3.25.11"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/serverless offline -s dev",
+    "deploy": "serverless deploy"
+  },
+  "author": "steve",
+  "license": "ISC"
+}
